@@ -1,0 +1,73 @@
+package Test;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.Test;
+
+
+import Pages.LoginPage;
+
+public class ValidarSesion 
+{
+WebDriver driver;
+	
+	@Test
+	public void validacionIngreso() throws InterruptedException 
+	{
+		System.setProperty("webdriver.chrome.driver","C:\\chromedriver.exe");
+		driver=new ChromeDriver();	
+		
+		driver.get("http://www.google.com");
+		driver.manage().window().maximize();
+		driver.findElement(By.xpath("//*[@title='Buscar']")).sendKeys("Falabella");
+		driver.findElement(By.xpath("(//*[@type='submit'])[2]")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//*[text()='Falabella.com - Mejor Compra Online']")).click();
+		Thread.sleep(5000);
+		WebElement busqueda = driver.findElement(By.xpath("//*[@type='search']"));
+		busqueda.sendKeys("ps4");
+		busqueda.sendKeys(Keys.ENTER);
+		Thread.sleep(4000);
+		driver.findElement(By.xpath("//*[text()='Consola PS4 Slim 1TB']")).click();
+		driver.findElement(By.xpath("//*[@class='fb-quantity-input__plus']")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//*[text()='Agregar a la bolsa']")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("(//*[@class='fb-form__input--radio fb-form__input-row'])[7]")).click();
+		Thread.sleep(1000);
+		driver.findElement(By.xpath("(//*[text()='Ver Bolsa de Compras'])[2]")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("(//*[@type='submit'])[6]")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("(//*[@id='region'])")).sendKeys("Region Metropolitana");
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("(//*[@id='comuna'])")).sendKeys("Santiago Centro");
+		Thread.sleep(10000);
+		driver.findElement(By.xpath("(//*[text()='Continuar'])[2]")).click();
+		Thread.sleep(10000);
+		driver.findElement(By.xpath("//*[text()='Retira tu compra']")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("(//*[text()='Seleccionar'])[1]")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("(//*[text()='Continuar'])")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("(//*[text()='Más opciones de pago'])")).click();
+		Thread.sleep(1000);
+		driver.findElement(By.xpath("(//*[text()='Seleccionar pago en efectivo'])")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("(//*[@id='firstName'])")).sendKeys("Al");
+		driver.findElement(By.xpath("(//*[@id='lastName'])")).sendKeys("Johnson");
+		driver.findElement(By.xpath("(//*[@id='phoneNumber'])")).sendKeys("946739738");
+		driver.findElement(By.xpath("(//*[@id='userIdNumber'])")).sendKeys("175436944");
+		driver.findElement(By.xpath("(//*[@id='emailAddress'])")).sendKeys("elesponge_genu@hotmail.com");
+		driver.findElement(By.xpath("//*[@type='checkbox']")).click();
+		driver.findElement(By.xpath("//*[text()='Reservar compra']")).click();
+		Thread.sleep(4000);
+		driver.quit();		
+	}
+}

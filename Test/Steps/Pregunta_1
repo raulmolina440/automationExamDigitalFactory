@@ -1,0 +1,117 @@
+Feature: Transferencias a terceros
+	En esta sección se realizan operaciones bancarias entre cuentas del mismo banco u otros bancos
+	No está permitido procesar una transferencia de una cuenta sin saldo.
+	El monto a transferir no debe superar el saldo disponible
+	Para toda transacción es necesario confirmarla mediante el ingreso de una clave dinámica envíada al teléfono celular del cliente
+	El usuario tiene 3 intentos para ingresar correctamente su clave dinámica, de lo contrario se bloqueará su cuenta.
+
+Scenario: Usuario intenta realizar una transferencia a tercero sin tener dinero en su cuenta
+Given Un usuario registrado en la plataforma con cuenta bancaria
+And Sin saldo en su cuenta
+When Realiza una transferencia a terceros
+And Presiona botón continuar
+Then Se muestra mensaje de saldo insuficiente para realizar la transferencia
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 0, Cuenta destino 00153791820, Rut destinatario: 10427952-k , monto a transferir 100.000 CLP. 
+
+Scenario: Usuario realiza transferencia a tercero con número de cuenta de destino errónea
+Given Un usuario registrado en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia a terceros
+And Ingresa número de cuenta de destino erróneo
+And Presiona botón continuar
+Then Se muestra mensaje de alerta referente a cuenta errónea o inexistente
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 550.000 CLP, Cuenta destino 999999999, Rut destinatario: 10427952-k, monto a transferir 100.000 CLP. 
+
+Scenario: Usuario escribe caracteres alfanúmericos y especiales en el campo cuenta destino
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Escribe caracteres alfanuméricos y especiales en el campo cuenta destino
+And Presiona botón continuar
+Then Se visualiza mensaje debajo del campo: "Número de cuenta inválido"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 550.000 CLP, Cuenta destino Ab"#"$"$&, Rut destinatario: 10427952-k, monto a transferir 100.000 CLP. 
+
+Scenario: Usuario presiona botón continuar sin llenar campos obligatorios
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Deja vacío los campos obligatorios
+And Presiona botón continuar
+Then Se visualiza mensaje debajo de los campos obligatorios: "Este campo es obligatorio"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 550.000 CLP.
+
+Scenario: Usuario intenta realizar transferencia a terceros ingresando monto mayor al saldo disponible
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando monto mayor al saldo disponible
+And Presiona botón continuar
+Then Se visualiza mensaje: "Saldo insuficiente"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 20.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-k, monto a transferir 100.000 CLP.
+
+Scenario: Usuario ingresa Rut destinatario erróneo
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando en el campo Rut destinatario un número erróneo
+And Presiona botón continuar
+Then Se visualiza mensaje debajo del campo Rut destinatario: "Rut inválido"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 1.000.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-4, monto a transferir 100.000 CLP.
+
+Scenario: Usuario ingresa clave dinámica errónea
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando los datos en todos los campos correctamente
+And Presiona botón continuar
+And Ingresa clave dinámica errónea
+Then Se muestra mensaje de advertencia: "Clave incorrecta, recuerde que solo tiene 3 intentos para ingresar su clave dinámica de forma correcta"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 1.000.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-4, monto a transferir 100.000 CLP, Clave dinámica: 123456
+
+Scenario: Bloqueo de clave dinámica
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando los datos en todos los campos correctamente
+And Presiona botón continuar
+And Ingresa clave dinámica errónea
+Then Se muestra mensaje de advertencia: "Clave incorrecta, recuerde que solo tiene 3 intentos para ingresar su clave dinámica de forma correcta"
+And Ingresa clave dinámica errónea
+Then Se muestra mensaje de advertencia: "Clave incorrecta, recuerde que solo tiene 3 intentos para ingresar su clave dinámica de forma correcta"
+And Ingresa clave dinámica errónea
+Then Se muestra mensaje: "Su cuenta ha sido bloqueada, puede desbloquearla llamando al telefono "222222222" contactando a un operador"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 1.000.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-4, monto a transferir 100.000 CLP, Clave dinámica: 123456
+
+Scenario: Usuario realiza una transferencia exitosa
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando los datos en todos los campos correctamente
+And Presiona botón continuar
+And Ingresa clave dinámica correctamente
+Then Se muestra mensaje de advertencia: "De acuerdo a tu instrucción se ha efectuado la siguiente transferencia"
+And Se visualiza la cuenta origen con los datos: nro de cuenta, monto transferido y asunto.
+And Se visualiza la cuenta destino con todos sus datos además de fecha, nro de operación y hora de la transacción.
+And Se muestran los botónes "Ir a mi resumen" y "Imprimir comprobante"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 1.000.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-4, monto a transferir 100.000 CLP, Clave dinámica: 134654
+
+Scenario: Usuario imprime comprobante de transferencia exitosa
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando los datos en todos los campos correctamente
+And Presiona botón continuar
+And Ingresa clave dinámica correctamente
+And Presiona el botón "Imprimir comprobante"
+Then Se muestra un archivo PDF con todos los datos de la transferencia.
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 20.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-4, monto a transferir 100.000 CLP, Clave dinámica: 134654
+
+Scenario: Usuario intenta realizar transferencia a terceros ingresando en el campo monto caracteres alfanuméricos
+Given Un usuario en la plataforma con cuenta bancaria
+And Con saldo positivo
+When Realiza una transferencia ingresando en el campo monto caracteres alfanuméricos
+Then Se visualiza mensaje debajo del campo: "Solo puede ingresar números en este campo"
+
+Data: Rut 18480167-1, Password: qa123456, Saldo en cuenta: 1.000.000 CLP, Cuenta destino 00153791820, Rut destinatario: 10427952-k, monto a transferir -k3"&"/*¨)%&
